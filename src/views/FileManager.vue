@@ -3,10 +3,7 @@
     <Modal v-model="modalFlag">
       <v-file-select ref="fileSelect"/>
       <div slot="footer">
-        <Button @click="confirmUpload" long type="success">
-          <Icon type="md-cloud-upload"></Icon>
-          上传
-        </Button>
+        <Button type="success" long @click="confirmUpload"><Icon type="md-cloud-upload"></Icon>上传</Button>
       </div>
     </Modal>
 
@@ -15,23 +12,18 @@
     </Sider>
     <div class="p-main">
       <Breadcrumb>
-        <BreadcrumbItem @click.native="clickBreadItem(-1)" to="/">
-          <Icon type="ios-home-outline"></Icon>
-          主目录
-        </BreadcrumbItem>
-        <BreadcrumbItem :key="index" @click.native="clickBreadItem(index)" to="/" v-for="(item, index) in bread_item">
-          {{item}}
-        </BreadcrumbItem>
+        <BreadcrumbItem to="/" @click.native="clickBreadItem(-1)"><Icon type="ios-home-outline"></Icon>主目录</BreadcrumbItem>
+        <BreadcrumbItem to="/" @click.native="clickBreadItem(index)" v-for="(item, index) in bread_item" :key="index">{{item}}</BreadcrumbItem>
       </Breadcrumb>
 
       <div class="p-content">
-        <Spin fix size="large" v-if="spin_show"></Spin>
+        <Spin size="large" fix v-if="spin_show"></Spin>
         <div class="row-tools">
           <div class="t-l">
             <label class="v-checkbox"><input type="checkbox" v-model="isCheckAll"><span></span></label>
             <Icon type="md-arrow-back" :class="{active:bread_item[0]!==''}" :disabled="bread_item[0]===''" @click="back" class="back "/>
             <Dropdown @on-click="fileSort" style="margin-right: 16px;">
-              <Icon size="24" style="cursor: pointer" type="md-swap"></Icon>
+              <Icon type="md-swap" size="24" style="cursor: pointer"></Icon>
               <DropdownMenu slot="list">
                 <DropdownItem name="name-asc">名称 - 升序</DropdownItem>
                 <DropdownItem name="name-desc">名称 - 降序</DropdownItem>
@@ -42,48 +34,21 @@
               </DropdownMenu>
             </Dropdown>
 
-            <Input @on-search="searchKeyword" clearable placeholder="在当前文件夹下搜索..." search style="width: auto"
-                   suffix="ios-search" v-model="searchKey"/>
-            <Button @click="offlineDownload" style="margin-left: 8px">
-              <Icon type="md-link"></Icon>
-              离线下载
-            </Button>
+            <Input v-model="searchKey" @on-search="searchKeyword" suffix="ios-search" search clearable
+                   placeholder="在当前文件夹下搜索..." style="width: auto"/>
+            <Button style="margin-left: 8px" @click="offlineDownload"><Icon type="md-link"></Icon>离线下载</Button>
           </div>
 
           <div class="t-r">
             <ButtonGroup class="c-btn-group">
-              <Button @click="addItemToClipboard('copy')">
-                <Icon type="md-copy"></Icon>
-                复制
-              </Button>
-              <Button @click="addItemToClipboard('move')">
-                <Icon type="md-cut"></Icon>
-                剪切
-              </Button>
-              <Button @click="pasteClipboard">
-                <Icon type="md-clipboard"></Icon>
-                粘贴
-              </Button>
-              <Button @click="shareFiles">
-                <Icon type="md-share"></Icon>
-                分享
-              </Button>
-              <Button @click="mkdirFunc" type="info">
-                <Icon type="md-add"></Icon>
-                新建
-              </Button>
-              <Button @click="removeFiles" type="error">
-                <Icon type="md-trash"></Icon>
-                删除
-              </Button>
-              <Button @click="modalFlag = true" type="success">
-                <Icon type="md-cloud-upload"></Icon>
-                上传
-              </Button>
-              <Button @click="downloadFiles" type="primary">
-                <Icon type="md-download"></Icon>
-                下载
-              </Button>
+              <Button @click="addItemToClipboard('copy')"><Icon type="md-copy"></Icon>复制</Button>
+              <Button @click="addItemToClipboard('move')"><Icon type="md-cut"></Icon>剪切</Button>
+              <Button @click="pasteClipboard"><Icon type="md-clipboard"></Icon>粘贴</Button>
+              <Button @click="shareFiles"><Icon type="md-share"></Icon>分享</Button>
+              <Button type="info" @click="mkdirFunc"><Icon type="md-add"></Icon>新建</Button>
+              <Button type="error" @click="removeFiles"><Icon type="md-trash"></Icon>删除</Button>
+              <Button type="success" @click="modalFlag = true"><Icon type="md-cloud-upload"></Icon>上传</Button>
+              <Button type="primary" @click="downloadFiles"><Icon type="md-download"></Icon>下载</Button>
             </ButtonGroup>
           </div>
         </div>
@@ -109,25 +74,19 @@
             <tbody>
             <tr v-for="item of current_folders">
               <td>
-                <label class="v-checkbox"><input :value="item.path" name="filePath" type="checkbox"
-                                                 v-model="checkedFiles"><span></span></label>
+                <label class="v-checkbox"><input type="checkbox" :value="item.path" name="filePath" v-model="checkedFiles"><span></span></label>
               </td>
               <td>
-                <div :class="{'is-dir': item.isdir}" class="item-title">
-                  <div @click="openDir(item)" class="t-content">
-                    <Icon size="24" type="ios-folder-outline" v-if="item.isdir"/>
-                    <Icon size="24" type="ios-document" v-if="!item.isdir"/>
+                <div class="item-title" :class="{'is-dir': item.isdir}">
+                  <div class="t-content" @click="openDir(item)">
+                    <Icon type="ios-folder-outline" size="24" v-if="item.isdir"/>
+                    <Icon type="ios-document" size="24" v-if="!item.isdir"/>
                     <span>{{item.title}}</span>
                   </div>
                   <div class="t-buttons">
-                    <Button @click.stop="renameFunc(item.title)" class="ivu-col-rename-btn" size="small" type="text">
-                      重命名
-                    </Button>
-                    <Button @click.stop="removeFile(item.path)" class="ivu-col-rename-btn" size="small" type="text">删除
-                    </Button>
-                    <Button @click.stop="downloadFile(item.path)" class="ivu-col-rename-btn" size="small" type="text">
-                      下载
-                    </Button>
+                    <Button class="ivu-col-rename-btn" size="small" type="text" @click.stop="renameFunc(item.title)">重命名</Button>
+                    <Button class="ivu-col-rename-btn" size="small" type="text" @click.stop="removeFile(item.path)">删除</Button>
+                    <Button class="ivu-col-rename-btn" size="small" type="text" @click.stop="downloadFile(item.path)">下载</Button>
                   </div>
                 </div>
               </td>
@@ -181,7 +140,7 @@
     computed: {
       ...mapState(['globals', 'websocket'])
     },
-    components: {VFileSelect},
+    components: { VFileSelect },
     watch: {
       isCheckAll(val) {
         this.checkedFiles = val ? this.current_folders.map(item => item.path) : []
@@ -192,22 +151,22 @@
       async getPathData(path, func, only_folder = false, orderby = 'none', order = 'none') {
         this.spin_show = true
         if (localStorage['baidupcs_file_sort'] == null) {
-          if (orderby === 'none') {
-            orderby = 'name'
-            order = 'asc'
-          }
+            if (orderby === 'none') {
+                orderby = 'name'
+                order = 'asc'
+            }
         } else {
-          let names = localStorage['baidupcs_file_sort'].split('-')
-          orderby = names[0]
-          order = names[1]
+            let names = localStorage['baidupcs_file_sort'].split('-');
+            orderby = names[0]
+            order = names[1]
         }
 
         const Data = []
         const result = await $axios.get(`files?path=${encodeURIComponent(path)}&order_by=${orderby}&order=${order}`).catch(this.error)
-        this.spin_show = false
-        const fdata = result.data.list
+        this.spin_show = false;
+        const fdata = result.data.list;
         for (var i = 0; i < fdata.length; i++) {
-          var fd = fdata[i]
+          var fd = fdata[i];
           if (fd.isdir === 1) {
             Data.push({
               path: fd.path,
@@ -218,7 +177,7 @@
               ctime: utils.formatDateTime(fd.server_ctime * 1000),
               loading: false,
               children: []
-            })
+            });
           } else if (only_folder === false) {
             Data.push({
               path: fd.path,
@@ -227,10 +186,10 @@
               mtime: utils.formatDateTime(fd.server_mtime * 1000),
               ctime: utils.formatDateTime(fd.server_ctime * 1000),
               isdir: false
-            })
+            });
           }
         }
-        func(Data)
+        func(Data);
       },
       resetCheckGroup() {
         this.isCheckAll = false
@@ -241,8 +200,8 @@
         this.resetCheckGroup()
       },
       setBreadPath(path) {
-        this.bread_item = path.split('/')
-        this.bread_item.splice(0, 1)
+        this.bread_item = path.split('/');
+        this.bread_item.splice(0, 1);
       },
       openDir(item) {
         if (!item.isdir) return
@@ -251,21 +210,14 @@
         this.setBreadPath(item.path)
       },
       clickBreadItem(index) {
-        var path = '/'
-        var tmp = this.bread_item
+        var path = '/';
+        var tmp = this.bread_item;
         while (tmp.length > index + 1) {
-          tmp.pop()
+          tmp.pop();
         }
-        path += tmp.join('/')
-        this.getPathData(path, this.setCurrentFolder)
-        this.setBreadPath(path)
-      },
-      back() {
-        if (this.bread_item[0] !== '') {
-          let path = '/' + this.bread_item.slice(0, -1).join('/')
-          this.getPathData(path, this.setCurrentFolder)
-          this.setBreadPath(path)
-        }
+        path += tmp.join('/');
+        this.getPathData(path, this.setCurrentFolder);
+        this.setBreadPath(path);
       },
       back() {
         if (this.bread_item[0] !== '') {
@@ -276,20 +228,20 @@
       },
       treeSelect(item) {
         if (item.length === 0) {
-          return
+          return;
         }
 
-        this.getPathData(item[0].path, this.setCurrentFolder)
-        this.setBreadPath(item[0].path)
+        this.getPathData(item[0].path, this.setCurrentFolder);
+        this.setBreadPath(item[0].path);
       },
       loadData(item, callback) {
-        this.getPathData(item.path, callback, true)
+        this.getPathData(item.path, callback, true);
       },
       fileSort(name) {
         localStorage.setItem('baidupcs_file_sort', name)
-        let names = name.split('-')
-        let cur_dir = "/" + this.bread_item.join('/')
-        this.getPathData(cur_dir, this.setCurrentFolder, false, names[0], names[1])
+        let names = name.split('-');
+        let cur_dir = "/" + this.bread_item.join('/');
+        this.getPathData(cur_dir, this.setCurrentFolder, false, names[0], names[1]);
       },
       addItemToClipboard(method) {
         if (this.checkedFiles.length === 0) {
@@ -426,7 +378,7 @@
               },
               on: {
                 input: (val) => {
-                  this.new_folder_name = val
+                  this.new_folder_name = val;
                 }
               }
             })
@@ -446,7 +398,7 @@
               this.getPathData(cur_dir, this.setCurrentFolder)
             }
           }
-        })
+        });
       },
       renameFunc(name) {
         this.$Modal.confirm({
@@ -454,11 +406,11 @@
             return h('Input', {
               props: {
                 value: name,
-                autofocus: true
+                autofocus: true,
               },
               on: {
                 input: (val) => {
-                  this.new_file_name = val
+                  this.new_file_name = val;
                 }
               }
             })
@@ -479,7 +431,7 @@
               this.getPathData(cur_dir, this.setCurrentFolder)
             }
           }
-        })
+        });
       },
       async searchKeyword() {
         if (this.searchKey === '') {
@@ -503,7 +455,7 @@
             isdir: false,
             size: utils.bytesToSize(fd.Size),
             mtime: utils.formatDateTime(fd.Mtime * 1000),
-            ctime: utils.formatDateTime(fd.Ctime * 1000)
+            ctime: utils.formatDateTime(fd.Ctime * 1000),
           })
         }
         this.setCurrentFolder(Data)
@@ -540,12 +492,12 @@
         const Data = [], Data1 = []
         let orderby = '', order = ''
         if (localStorage['baidupcs_file_sort'] == null) {
-          orderby = 'name'
-          order = 'asc'
+            orderby = 'name'
+            order = 'asc'
         } else {
-          let names = localStorage['baidupcs_file_sort'].split('-')
-          orderby = names[0]
-          order = names[1]
+            let names = localStorage['baidupcs_file_sort'].split('-');
+            orderby = names[0]
+            order = names[1]
         }
         const result = await $axios.get(`files?path=${encodeURIComponent(path)}&order_by=${orderby}&order=${order}`).catch(this.error)
         this.spin_show = false
@@ -598,13 +550,13 @@
           return ret
         }
         const data = result.data.data
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].en_name === 'workdir') {
+        for(let i = 0; i < data.length; i++) {
+          if(data[i].en_name === 'workdir') {
             ret = data[i].value
           }
         }
         return ret
-      }
+      },
     },
     async mounted() {
       let path = await this.getWorkingDir()
