@@ -267,6 +267,13 @@
           this.setBreadPath(path)
         }
       },
+      back() {
+        if (this.bread_item[0] !== '') {
+          let path = '/' + this.bread_item.slice(0, -1).join('/')
+          this.getPathData(path, this.setCurrentFolder)
+          this.setBreadPath(path)
+        }
+      },
       treeSelect(item) {
         if (item.length === 0) {
           return
